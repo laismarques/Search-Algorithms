@@ -1,9 +1,10 @@
+import numpy as np
 class Node:
-    def __init__(self, label, distance):
+    def __init__(self, label, goal_distance):
         self.label = label
         self.visitaded = False
         self.adjacent = []
-        self.distance = distance
+        self.goal_distance = goal_distance
     
     def add_adjacent(self, adjacent):
         self.adjacent.append(adjacent)
@@ -82,3 +83,71 @@ class Graph:
 
 graph = Graph()
 graph.arad.show_adjacent()
+
+class SortedList:
+    def __init__(self, size):
+        self.size = size
+        self.last_position = -1
+        self.values = np.empty(self.size, dtype=object)
+    # O(n)
+    def show(self):
+        if self.last_position == -1:
+            print("The list is empty")
+        else:
+            for i in range( self.last_position + 1):
+                print("[",i,"]", "-", self.values[i].label, "-", self.values[i].goal_distance)
+    # O(n)
+    def add(self, node):
+        if self.last_position == self.size -1:
+            print("The List is Full")
+            return -1
+
+        position = 0
+        for i in range(self.last_position + 1):
+            position = i
+            if self.values[i].goal_distance > node.goal_distance:
+                break
+            if i == self.last_position:
+                position = i + 1
+
+        x = self.last_position
+        while x >= position:
+            self.values[x + 1] = self.values[x]
+            x -=1
+        self.values[position] = node
+        self.last_position +=1
+
+list = SortedList(5)
+list.add(graph.arad)
+list.add(graph.craiova)  
+list.add(graph.bucharest) 
+list.add(graph.dobreta)
+
+list.show()
+
+class GreedySearch():
+    def __init__(self, goal):
+        self.goal = goal 
+        self.find = False
+
+    def search(self, current):
+        print("----------")
+        print("Current: {}".format(current.label))
+        current.visitaded = True
+
+        if current == self.goal:
+            self.find = True
+        else:
+            sorted_list = SortedList(len(current.adjacent))
+
+            for i in current.adjacent:
+                if i.vertex.visitaded == False:
+                    i.vertex.visitaded == True
+                    sorted_list.add(i.vertex)
+            sorted_list.show()
+
+            if sorted_list.values[0] != None:
+                self.search(sorted_list.values[0])
+
+greedy_search = GreedySearch(graph.bucharest)
+greedy_search.search(graph.arad)
