@@ -12,7 +12,10 @@ class SortedList:
             print("The list is empty")
         else:
             for i in range( self.last_position + 1):
-                print("[",i,"]", "-", self.values[i].label, "-", self.values[i].goal_distance)
+                print("[",i,"]", "-", self.values[i].vertex.label, "-", 
+                self.values[i].distance, "-",
+                self.values[i].vertex.goal_distance, "-",
+                self.values[i].astar_distance)
     # O(n)
     def add(self, node):
         if self.last_position == self.size -1:
@@ -22,7 +25,7 @@ class SortedList:
         position = 0
         for i in range(self.last_position + 1):
             position = i
-            if self.values[i].goal_distance > node.goal_distance:
+            if self.values[i].astar_distance > node.astar_distance:
                 break
             if i == self.last_position:
                 position = i + 1
@@ -33,4 +36,3 @@ class SortedList:
             x -=1
         self.values[position] = node
         self.last_position +=1
-
